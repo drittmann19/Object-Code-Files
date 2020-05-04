@@ -1,0 +1,169 @@
+var serial; //variable to hold an instance of the serial port library
+var portName = 'COM3'; //fill in with YOUR port
+
+var level = 0;
+
+var button1;
+var button2;
+var button3;
+var button4;
+
+var num1;
+
+
+
+function setup() {
+  createCanvas(400, 500);
+
+  serial = new p5.SerialPort(); //a new instance of serial port library
+
+  //set up events for serial communication
+  serial.on('connected', serverConnected);
+  serial.on('open', portOpen);
+  serial.on('data', serialEvent);
+  serial.on('error', serialError);
+  serial.on('close', portClose);
+
+  //open our serial port
+  serial.open(portName);
+
+  osc = new p5.Oscillator('sine');
+  //let's figure out what port we're on - useful for determining your port
+  // serial.on('list', printList); //set a callback function for the serialport list event
+  // serial.list(); //list the serial ports
+}
+
+function draw() {
+  if(level == 0){
+    background('white');
+    fill('black');
+    textSize(32);
+
+    
+    rect(25, 250, 350, 150);
+    fill('white');
+    text('click to start painting', 30, 285);
+    text('press enter when done', 30, 345);
+    text('to save image of canvas', 30, 385);
+  }
+  
+  else if(level == 1){
+    background('white');
+    level = 2;
+  }
+  else{
+    
+    if(button1 == 1){
+        blueNote();
+    }
+    if(button2 == 1){
+      greenNote();
+    }
+    if(button3 == 1){
+      yellowNote();
+    }
+    if(button4 == 1){
+      redNote();
+    }
+    
+  
+  }
+  StartorRestart();
+}
+
+function StartorRestart(){
+  if(level == 0){ //mouse click will bring you back to level 1
+    if (mouseIsPressed) {
+      level = 1;
+      serial.write(level);
+    }
+  }
+  else if(level == 2){
+    if (keyIsPressed) {
+      saveCanvas('myCanvas', 'png');
+      level = 0;
+      serial.write(level);
+    }
+  }
+}
+
+function blueNote(){
+  osc.freq(400);
+  osc.amp(1);
+  osc.start();
+  let x = random(0,400);
+  let y = random(0,500);
+  fill('blue');
+  ellipse(x, y, 75, 75);
+}
+
+function greenNote(){
+  let x = random(0,400);
+  let y = random(0,500);
+  fill('green');
+  ellipse(x, y, 75, 75);
+}
+
+function yellowNote(){
+  let x = random(0,400);
+  let y = random(0,500);
+  fill('yellow');
+  ellipse(x, y, 75, 75);
+}
+
+function redNote(){
+  let x = random(0,400);
+  let y = random(0,500);
+  fill('red');
+  ellipse(x, y, 75, 75);
+}
+
+
+//all my callback functions are down here:
+//these are useful for giving feedback
+
+function serverConnected(){
+	console.log('connected to the server');
+}
+
+function portOpen(){
+  console.log('the serial port opened!');
+}
+
+//THIS IS WHERE WE RECEIVE DATA!!!!!!
+//make sure you're reading data based on how you're sending from arduino
+function serialEvent(){
+	//receive serial data here
+    var inString = serial.readLine();// this catches the data that we are writing to serial monitor in arduino
+  
+  //check if somethings there
+  if(inString.length > 0){
+    var stringArray = split(inString, ",");
+    
+    //sensor var should be global vars
+    //set sensor variable to an item in the array
+    //Number() converts from string to number
+    button1 = Number(stringArray[0]);
+    button2 = Number(stringArray[1]);
+    button3 = Number(stringArray[2]);
+    button4 = Number(stringArray[3]);
+    console.log(button1 + " " + button2 + " " + button3 + " " + button4);
+  }
+}
+
+function serialError(err){
+  console.log('something went wrong with the port. ' + err);
+}
+
+function portClose(){
+  console.log('the port was closed');
+}
+
+// get the list of ports:
+function printList(portList) {
+ // portList is an array of serial port names
+ for (var i = 0; i < portList.length; i++) {
+ // Display the list the console:
+ print(i + " " + portList[i]);
+ }
+}
