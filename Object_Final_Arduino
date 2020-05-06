@@ -1,0 +1,30 @@
+int button1;
+int button2;
+int button3;
+int button4;
+int button5;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600); //initialize serial communication
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  button1 = digitalRead(2); //reading signal from pin 2
+  button2 = digitalRead(4); //reading signal from pin 2
+  button3 = digitalRead(7); //reading signal from pin 2
+  button4 = digitalRead(8); //reading signal from pin 2
+  button5 = digitalRead(12); //reading signal from pin 2
+  
+  Serial.print(button1);
+  Serial.print(",");
+  Serial.print(button2);
+  Serial.print(",");
+  Serial.print(button3);
+  Serial.print(",");
+  Serial.print(button4);
+  Serial.print(",");
+  Serial.println(button5);
+  delay(1);
+}
