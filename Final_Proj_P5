@@ -7,13 +7,39 @@ var button1;
 var button2;
 var button3;
 var button4;
+var button5;
 
-var num1;
+var soundOn1 = false;
+var soundOn2 = false;
+var soundOn3 = false;
+var soundOn4 = false;
+var soundOn5 = false;
 
+var x1;
+var x2;
+var x3;
+var x4;
+var x5;
+
+var y1;
+var y2;
+var y3;
+var y4;
+var y5;
+
+var r1 = 75;
+var r2 = 75;
+var r3 = 25;
+var r4 = 75;
+var r5 = 75;
+
+var angle = 2.0;
+var scalar = 2.5;
+var speed = 0.1;
 
 
 function setup() {
-  createCanvas(400, 500);
+  createCanvas(700, 500);
 
   serial = new p5.SerialPort(); //a new instance of serial port library
 
@@ -27,7 +53,13 @@ function setup() {
   //open our serial port
   serial.open(portName);
 
-  osc = new p5.Oscillator('sine');
+  osc1 = new p5.Oscillator('sawtooth');
+  osc2 = new p5.Oscillator('sawtooth');
+  osc3 = new p5.Oscillator('sawtooth');
+  osc4 = new p5.Oscillator('sawtooth');
+  osc5 = new p5.Oscillator('sawtooth');
+  
+  noStroke();
   //let's figure out what port we're on - useful for determining your port
   // serial.on('list', printList); //set a callback function for the serialport list event
   // serial.list(); //list the serial ports
@@ -40,11 +72,11 @@ function draw() {
     textSize(32);
 
     
-    rect(25, 250, 350, 150);
+    rect(175, 200, 350, 150);
     fill('white');
-    text('click to start painting', 30, 285);
-    text('press enter when done', 30, 345);
-    text('to save image of canvas', 30, 385);
+    text('click to start painting', 180, 235);
+    text('press enter when done', 180, 295);
+    text('to save image of canvas', 180, 335);
   }
   
   else if(level == 1){
@@ -53,20 +85,45 @@ function draw() {
   }
   else{
     
+    //change size and opacity
+
     if(button1 == 1){
-        blueNote();
+      note1();
+    }
+    if(button1 == 0){
+      osc1.stop();
+      soundOn1 = false;
     }
     if(button2 == 1){
-      greenNote();
+      note2();
+    }
+    if(button2 == 0){
+      osc2.stop();
+      soundOn2 = false;
     }
     if(button3 == 1){
-      yellowNote();
+      note3();
+    }
+    if(button3 == 0){
+      osc3.stop();
+      soundOn3 = false;
     }
     if(button4 == 1){
-      redNote();
+      note4();
+    }
+    if(button4 == 0){
+      osc4.stop();
+      soundOn4 = false;
+    }
+    if(button5 == 1){
+       note5();
+    }
+    if(button5 == 0){
+      osc5.stop();
+      soundOn5 = false;
     }
     
-  
+    
   }
   StartorRestart();
 }
@@ -87,37 +144,103 @@ function StartorRestart(){
   }
 }
 
-function blueNote(){
-  osc.freq(400);
-  osc.amp(1);
-  osc.start();
-  let x = random(0,400);
-  let y = random(0,500);
-  fill('blue');
-  ellipse(x, y, 75, 75);
+function note1(){
+    if(soundOn1 == false){
+        soundOn1 = true;
+        osc1.freq(400);
+        osc1.amp(0.25);
+        osc1.start();
+        x1 = random(0,650);
+        y1 = random(0,450);
+        fill('#0439D9');
+        ellipse(x1, y1, r1, r1);
+      }
+      //let num = random(-1,1);
+      //x1 = x1 + (40 * num);
+      //y1 = y1 - (40 * num);
+  //x1 = x1 + random(-75,75);
+      //y1 = y1 + random(-75, 75);
+  
+      x1 = x1 + (40 * random(-1,1));
+      y1 = y1 + (40 * random(-1,1));
+      r1 = random(40, 100);
+      fill(4, 57, 217, random(30,255));
+      ellipse(x1, y1, r1, r1);
+      
 }
 
-function greenNote(){
-  let x = random(0,400);
-  let y = random(0,500);
-  fill('green');
-  ellipse(x, y, 75, 75);
+function note2(){
+  if(soundOn2 == false){
+    soundOn2 = true;
+    osc2.freq(450);
+    osc2.amp(0.25);
+    osc2.start();
+    x2 = random(0,650);
+    y2 = random(0,450);
+    fill('#F28B50');
+    ellipse(x2, y2, 50, 50);
+  }
+  let num = random(-1,1);
+  x2 = x2 + (40 * num);
+  y2 = y2 - (40 * num);
+  fill('#F28B50');
+  ellipse(x2, y2, 50, 50);
 }
 
-function yellowNote(){
-  let x = random(0,400);
-  let y = random(0,500);
-  fill('yellow');
-  ellipse(x, y, 75, 75);
+function note3(){
+  if(soundOn3 == false){
+    soundOn3 = true;
+    osc3.freq(500);
+    osc3.amp(0.25);
+    osc3.start();
+    x3 = random(0,650);
+    y3 = random(0,450);
+    fill('#590253');
+    ellipse(x3, y3,r3, r3);
+  }
+  x3 = x3 + cos(angle) * scalar;
+  y3 = y3 + sin(angle) * scalar; 
+  fill(89, 2, 83);
+  ellipse(x3, y3, r3, r3);
+  angle += speed;
+  scalar += speed;
 }
 
-function redNote(){
-  let x = random(0,400);
-  let y = random(0,500);
-  fill('red');
-  ellipse(x, y, 75, 75);
+function note4(){
+  if(soundOn4 == false){
+    soundOn4 = true;
+    osc4.freq(550);
+    osc4.amp(0.25);
+    osc4.start();
+    x4 = random(0,650);
+    y4 = random(0,450);
+    fill('#05F2F2');
+    ellipse(x4, y4, 50, 50);
+  }
+  let num = random(-1,1);
+  x4 = x4 + (20 * num);
+  y4 = y4 + (20 * num);
+  fill('#05F2F2');
+  ellipse(x4, y4, 50, 50);
 }
 
+function note5(){
+  if(soundOn5 == false){
+    soundOn5 = true;
+    osc5.freq(600);
+    osc5.amp(0.25);
+    osc5.start();
+    x5 = random(0,650);
+    y5 = random(0,450);
+    fill('#710273');
+    ellipse(x5, y5, r5, r5);
+  }
+  x5 = x5 + (40 * random(-1,1));
+  y5 = y5 + (40 * random(-1,1));
+  r5 = random(40, 100);
+  fill(113, 2, 115, random(30,255));
+  ellipse(x5, y5, r5, r5);
+}
 
 //all my callback functions are down here:
 //these are useful for giving feedback
@@ -147,7 +270,8 @@ function serialEvent(){
     button2 = Number(stringArray[1]);
     button3 = Number(stringArray[2]);
     button4 = Number(stringArray[3]);
-    console.log(button1 + " " + button2 + " " + button3 + " " + button4);
+    button5 = Number(stringArray[4]);
+    console.log(button1 + " " + button2 + " " + button3 + " " + button4 + " " + button5);
   }
 }
 
